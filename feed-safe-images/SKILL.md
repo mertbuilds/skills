@@ -1,6 +1,6 @@
 ---
 name: feed-safe-images
-description: "Pad photos onto a white canvas at the exact ratio X, Instagram, Threads, or LinkedIn show in the feed, so the whole photo is visible before anyone taps. Use when the user wants to post photos to social media, asks why their image got cropped in the timeline, says 'make this feed safe', 'add white borders for X', 'prep these for instagram', or attaches 2-4 photos for one post."
+description: "Pad photos onto a white canvas at the exact ratio social-media feeds use, so the whole photo is visible on X, Instagram, Threads, or LinkedIn before anyone taps. Use when the user wants to post photos to social media, asks why their image got cropped in the timeline, says 'make this feed safe', 'add white borders for X', 'prep these for instagram', or attaches 2-4 photos for one post."
 user-invocable: true
 ---
 
