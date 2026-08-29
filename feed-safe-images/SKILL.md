@@ -14,8 +14,8 @@ This skill ships `scripts/pad.sh`, an ffmpeg one-liner wrapped with the right ca
 
 | Layout | Platform and case | Canvas per image | Ratio |
 | --- | --- | --- | --- |
-| `x1` | X, single image, photo at 92% width | 2400 x 1350 | 16:9 |
-| `xc` | X, every slide of a 2-4 image carousel, photo at 92% width | 2400 x 1920 | 5:4 |
+| `x1` | X, single image, photo at 90% width | 2400 x 1350 | 16:9 |
+| `xc` | X, every slide of a 2-4 image carousel, photo at 90% width | 2400 x 1920 | 5:4 |
 | `x2` `x3big` `x3small` `x4` | X, legacy grid layouts. Obsolete, see note below | | |
 | `ig` | Instagram feed post or carousel slide, photo at 92% width | 2160 x 2880 | 3:4 |
 | `threads` | Threads post or carousel slide | 2160 x 2700 | 4:5 |
@@ -23,7 +23,7 @@ This skill ships `scripts/pad.sh`, an ffmpeg one-liner wrapped with the right ca
 | `li-wide` | LinkedIn, landscape | 2400 x 1256 | 1.91:1 |
 | `square` | any platform, 1:1 | 2160 x 2160 | 1:1 |
 
-Canvases are 2x to 3x the platform's display size so they survive recompression. The photo is fit to 95.3% of the canvas on its constraining axis and centered (92% on `x1`, `xc`, `ig`: in the X and Instagram feeds a 95.3% fit leaves margins too thin to see). That margin was measured from a photographer's Instagram grid that reads well at thumbnail size; override with `--fit`.
+Canvases are 2x to 3x the platform's display size so they survive recompression. The photo is fit to 95.3% of the canvas on its constraining axis and centered (90% on `x1` and `xc`, 92% on `ig`: in the X and Instagram feeds a 95.3% fit leaves margins too thin to see, live-tested 2026-08-29). That margin was measured from a photographer's Instagram grid that reads well at thumbnail size; override with `--fit`.
 
 **X multi-image posts are a carousel now, not a grid.** Since 2026 (X Lite Android April, wider rollout by June, x.com web by late August) a post with 2-4 images shows as a horizontal swipe carousel. Each slide renders at its own full aspect ratio with no crop, so the old grid pads (7:8, 4:7, 2:1) are wrong: they show as squat white-barred slides. The carousel slot itself is 5:4 with `object-fit: cover` (measured on x.com 2026-08-29: 479 x 383 at every viewport width), so anything wider than 5:4 is cropped (16:9 loses about 30% of its width) while portrait down to 7:8 passes through. Pad every slide with `xc` (5:4). The `x2` / `x3big` / `x3small` / `x4` layouts stay in the script for anyone still seeing the grid, but do not reach for them by default.
 

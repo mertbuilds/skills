@@ -19,7 +19,7 @@
 #
 # Options:
 #   -o DIR       output directory (default ./out)
-#   --fit F      photo occupies F of the canvas on its constraining axis (default 0.953; x1, xc, ig 0.92)
+#   --fit F      photo occupies F of the canvas on its constraining axis (default 0.953; x1 and xc 0.90; ig 0.92)
 #   --bg COLOR   canvas color, any ffmpeg color name or hex (default white)
 #   -q N         JPEG quality 2..31, lower is better (default 2)
 #
@@ -30,8 +30,8 @@ layout=${1:-}; shift || true
 [ -n "$layout" ] || { sed -n '2,25p' "$0"; exit 1; }
 
 case $layout in
-  x1)      W=2400; H=1350; deffit=0.92 ;;  # X single image; 92% width, thinner margins read as zero in the feed
-  xc)      W=2400; H=1920; deffit=0.92 ;;  # X carousel slide (2-4 images), 5:4 slot, object-fit cover (measured 2026-08-29); 92% width
+  x1)      W=2400; H=1350; deffit=0.90 ;;  # X single image; 90% width, thinner margins read as zero in the feed
+  xc)      W=2400; H=1920; deffit=0.90 ;;  # X carousel slide (2-4 images), 5:4 slot, object-fit cover (measured 2026-08-29); 90% width
   x2)      W=2100; H=2400 ;;  # legacy X grid, obsolete since X moved to carousel (2026)
   x3big)   W=2100; H=2400 ;;  # legacy X grid, obsolete
   x3small) W=2100; H=1200 ;;  # legacy X grid, obsolete
