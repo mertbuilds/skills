@@ -19,7 +19,7 @@
 #
 # Options:
 #   -o DIR       output directory (default ./out)
-#   --fit F      photo occupies F of the canvas on its constraining axis (default 0.953)
+#   --fit F      photo occupies F of the canvas on its constraining axis (default 0.953, ig 0.92)
 #   --bg COLOR   canvas color, any ffmpeg color name or hex (default white)
 #   -q N         JPEG quality 2..31, lower is better (default 2)
 #
@@ -36,13 +36,14 @@ case $layout in
   x3big)   W=2100; H=2400 ;;  # legacy X grid, obsolete
   x3small) W=2100; H=1200 ;;  # legacy X grid, obsolete
   x4)      W=2400; H=1200 ;;  # legacy X grid, obsolete
-  ig|threads|li) W=2160; H=2700 ;;
+  ig)      W=2160; H=2880; deffit=0.92 ;;  # Instagram feed frame is 3:4; a 4:5 canvas gets ~6% cropped per side (live-tested 2026-08-29)
+  threads|li) W=2160; H=2700 ;;
   li-wide) W=2400; H=1256 ;;
   square)  W=2160; H=2160 ;;
   *) echo "unknown layout: $layout" >&2; exit 1 ;;
 esac
 
-out=./out; fit=0.953; bg=white; q=2
+out=./out; fit=${deffit:-0.953}; bg=white; q=2
 files=()
 while [ $# -gt 0 ]; do
   case $1 in

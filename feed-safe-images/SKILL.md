@@ -17,7 +17,7 @@ This skill ships `scripts/pad.sh`, an ffmpeg one-liner wrapped with the right ca
 | `x1` | X, single image | 2400 x 1350 | 16:9 |
 | `xc` | X, every slide of a 2-4 image carousel | 2400 x 1920 | 5:4 |
 | `x2` `x3big` `x3small` `x4` | X, legacy grid layouts. Obsolete, see note below | | |
-| `ig` | Instagram feed post or carousel slide | 2160 x 2700 | 4:5 |
+| `ig` | Instagram feed post or carousel slide, photo at 92% width | 2160 x 2880 | 3:4 |
 | `threads` | Threads post or carousel slide | 2160 x 2700 | 4:5 |
 | `li` | LinkedIn, portrait (most feed space) | 2160 x 2700 | 4:5 |
 | `li-wide` | LinkedIn, landscape | 2400 x 1256 | 1.91:1 |
@@ -27,7 +27,7 @@ Canvases are 2x to 3x the platform's display size so they survive recompression.
 
 **X multi-image posts are a carousel now, not a grid.** Since 2026 (X Lite Android April, wider rollout by June, x.com web by late August) a post with 2-4 images shows as a horizontal swipe carousel. Each slide renders at its own full aspect ratio with no crop, so the old grid pads (7:8, 4:7, 2:1) are wrong: they show as squat white-barred slides. The carousel slot itself is 5:4 with `object-fit: cover` (measured on x.com 2026-08-29: 479 x 383 at every viewport width), so anything wider than 5:4 is cropped (16:9 loses about 30% of its width) while portrait down to 7:8 passes through. Pad every slide with `xc` (5:4). The `x2` / `x3big` / `x3small` / `x4` layouts stay in the script for anyone still seeing the grid, but do not reach for them by default.
 
-Live-tested: `x1` (single), `xc` (3-slide carousel, every photo whole), `ig`. The rest come from platform docs and third-party size guides current as of 2026 and can drift; third-party size guides still described the X grid months after it was gone, so trust a live post over a guide. If a preview still crops, check the platform's current layout and adjust the table.
+Live-tested: `x1` (single), `xc` (3-slide carousel, every photo whole), `ig` (2-slide carousel; the earlier 4:5 canvas was cropped about 6% per side by Instagram's 3:4 feed frame and lost its margins, hence 3:4 at 92%). The rest come from platform docs and third-party size guides current as of 2026 and can drift; third-party size guides still described the X grid months after it was gone, so trust a live post over a guide. If a preview still crops, check the platform's current layout and adjust the table.
 
 ## Usage
 
