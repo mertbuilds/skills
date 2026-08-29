@@ -30,11 +30,11 @@ layout=${1:-}; shift || true
 [ -n "$layout" ] || { sed -n '2,25p' "$0"; exit 1; }
 
 case $layout in
-  x1)      W=2400; H=1350 ;;
-  x2)      W=2100; H=2400 ;;
-  x3big)   W=2100; H=2400 ;;
-  x3small) W=2100; H=1200 ;;
-  x4)      W=2400; H=1200 ;;
+  x1)      W=2400; H=1350 ;;  # X single image and every slide of a 2-4 image carousel
+  x2)      W=2100; H=2400 ;;  # legacy X grid, obsolete since X moved to carousel (2026)
+  x3big)   W=2100; H=2400 ;;  # legacy X grid, obsolete
+  x3small) W=2100; H=1200 ;;  # legacy X grid, obsolete
+  x4)      W=2400; H=1200 ;;  # legacy X grid, obsolete
   ig|threads|li) W=2160; H=2700 ;;
   li-wide) W=2400; H=1256 ;;
   square)  W=2160; H=2160 ;;
