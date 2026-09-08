@@ -37,12 +37,16 @@ wt switch --create <branch-name> --yes
 
 This switches your working directory into the new worktree.
 
-### 3. Implement
+### 3. Implement (delegate, verify, repeat)
 
-- Read the files you'll touch before editing. Match existing conventions exactly.
+You orchestrate. You do not write code. Every code change goes to an `implementer` subagent (user-level agent at `~/.claude/agents/implementer.md`: Opus, xhigh effort), one small chunk per agent.
+
+- Split the work into the smallest chunks that each leave the repo building. Typical chunk: one module, one route, one migration, one test file. Never "implement the whole feature" in one agent.
+- Spawn with the Agent tool, `subagent_type: "implementer"`, and a prompt that carries everything the agent needs: absolute repo path (the worktree), the exact files to touch, the conventions to follow, the verify commands, and what NOT to do. The agent has no conversation context.
+- After each chunk, verify yourself before the next: read the diff, run the typecheck/lint/tests the agent claims passed. Reject and re-spawn on anything that skips, casts to `any`, disables rules, or drifts from the spec.
 - Follow the repo's CLAUDE.md rules and the user's memory feedback (minimalism, no premature abstractions, no unnecessary comments, no em dashes).
-- Keep the diff focused — no unrelated cleanup.
-- If a fast typecheck exists (`tsc --noEmit`, `bun run lint`, `cargo check`, etc.), run it once before committing. Don't fabricate commands; if unsure what the repo uses, skip.
+- Keep the diff focused. No unrelated cleanup.
+- Ops, investigation, config, and one-line doc fixes stay with you. Code goes to the implementer.
 
 ### 4. Commit
 
