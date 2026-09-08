@@ -42,9 +42,9 @@ Research a product name and `.com` domain by combining Google Trends trajectory,
 
 ### [`feed-safe-images`](./feed-safe-images/SKILL.md)
 
-Pad photos onto a white canvas at the ratio social-media feeds use, so the full photo is visible on X, Instagram, Threads, or LinkedIn before anyone taps. Ships `scripts/pad.sh`: one ffmpeg call per photo, layouts for X 1-4 image posts (16:9, 7:8, 4:7, 2:1), Instagram and Threads 4:5, LinkedIn 4:5 and 1.91:1.
+Pad photos onto a solid canvas at the ratio social-media feeds use, so the full photo is visible on X, Instagram, Threads, or LinkedIn before anyone taps. Ships `scripts/pad.sh`: one ffmpeg call per photo, layouts for X single and carousel (5:4), Instagram 3:4 (white `ig`, black rounded `igblack`, full-bleed `film` frame), Threads 4:5, LinkedIn 4:5 and 1.91:1. Also `scripts/host.sh` to stage files on a 1-day-expiry Cloudflare R2 bucket for Instagram's fetch-by-URL API.
 
-**Requires** `ffmpeg`. No accounts, no API keys.
+**Requires** `ffmpeg`. `pad.sh` needs no accounts or API keys; `host.sh` needs `wrangler login` and an R2 bucket.
 
 ## License
 
