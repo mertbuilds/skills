@@ -1,12 +1,12 @@
 ---
 name: implement
-description: "Build a feature in an isolated worktrunk worktree, commit, and open a draft PR. Use whenever the user asks to implement, build, add, or fix something that touches code — e.g. '/implement', 'implement X', 'build X', 'add X', 'fix X', 'let's build it', 'ship it', 'drop this in', 'go code it up'. Skip for questions, explanations, research, and trivial one-line docs/config edits. Skip if already inside a worktrunk worktree (just implement directly)."
+description: "Build a feature in an isolated worktrunk worktree, commit, and open a PR marked ready for review. Use whenever the user asks to implement, build, add, or fix something that touches code — e.g. '/implement', 'implement X', 'build X', 'add X', 'fix X', 'let's build it', 'ship it', 'drop this in', 'go code it up'. Skip for questions, explanations, research, and trivial one-line docs/config edits. Skip if already inside a worktrunk worktree (just implement directly)."
 user-invocable: true
 ---
 
-# Implement: worktrunk-isolated build, draft PR out
+# Implement: worktrunk-isolated build, ready-for-review PR out
 
-A lean implementation flow. You've already discussed what to build in the conversation — this skill takes it from there: isolate to a worktree, implement, commit, push, open a draft PR. Stay in the worktree so the user can iterate on review feedback without switching. The PR is the merge path; `wt merge` is never used.
+A lean implementation flow. You've already discussed what to build in the conversation — this skill takes it from there: isolate to a worktree, implement, commit, push, open a PR that is ready for review. Stay in the worktree so the user can iterate on review feedback without switching. The PR is the merge path; `wt merge` is never used.
 
 ## When NOT to invoke this skill
 
@@ -64,7 +64,7 @@ Rules (same as `/commit`):
 - If a pre-commit hook fails, fix the underlying issue, re-stage, and create a NEW commit. Never `--no-verify`. Never `--amend`.
 - Before staging, scan the diff for obvious secrets (API keys, tokens, JWTs) — abort and warn the user if any appear.
 
-### 5. Push and open a draft PR
+### 5. Push and open a ready-for-review PR
 
 ```bash
 git push -u origin <branch-name>
@@ -75,9 +75,9 @@ Detect the base branch:
 gh repo view --json defaultBranchRef -q '.defaultBranchRef.name'
 ```
 
-Open a **draft** PR:
+Open the PR **ready for review** (never draft, so AI reviewers like cubic run automatically):
 ```bash
-gh pr create --draft --title "<short title, under 70 chars>" --body "$(cat <<'EOF'
+gh pr create --title "<short title, under 70 chars>" --body "$(cat <<'EOF'
 ## Summary
 <1-3 bullets — what changed and why>
 
@@ -135,5 +135,5 @@ If the user is actively iterating (asking for follow-up edits in the same sessio
 - No `wt merge` — merging happens via the PR in GitHub.
 - No `wt remove` — that's manual after PR merge.
 - No parallel architect/reviewer agents — that's `/worktree-dev:worktree-dev`.
-- No marking the PR ready — it stays draft until the user chooses.
+- No draft PRs. Always open ready for review; if a PR ends up draft, mark it ready (`gh pr ready <number>`, or GraphQL `markPullRequestReadyForReview`).
 - No force-push, no `--no-verify`, no amending existing commits.

@@ -25,7 +25,7 @@ Claude Code picks up new skills on next launch.
 
 ### [`implement`](./implement/SKILL.md)
 
-Build a feature in an isolated git worktree, commit, and open a draft PR. Triggers on "implement X", "build X", "fix X", `/implement`.
+Build a feature in an isolated git worktree, commit, and open a PR ready for review. Triggers on "implement X", "build X", "fix X", `/implement`.
 
 **Requires [worktrunk](https://github.com/worktrunk/worktrunk)** (the `wt` CLI). The skill uses `wt switch --create` for worktree isolation and `wt step copy-ignored` for env file propagation. Without worktrunk, the workflow won't run as written — fork and swap `wt` calls for `git worktree add` if you prefer vanilla git.
 
