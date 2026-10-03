@@ -40,6 +40,12 @@ Research a product name and `.com` domain by combining Google Trends trajectory,
 - An Ahrefs account logged into Brave (skill uses the free keyword generator behind login)
 - `curl` for RDAP batch availability
 
+### [`logo-design`](./logo-design/SKILL.md)
+
+Research-first logo and app icon design. Four parallel research agents (design principles, competitor icons via the App Store API, a curated mood board from Logobook and friends, YouTube talk transcripts), then 10+ directions built from borrowed sign systems, then GPT Image 2.5 generation with 16px/32px legibility sheets, a rubric critique, and a hand-built SVG. Triggers on "design a logo", "app icon for X", `/logo-design`.
+
+**Requires:** at least one web search tool (Exa, Parallel, context.dev, or built-in search), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [uv](https://github.com/astral-sh/uv) (for the Pillow contact-sheet script), and API access to GPT Image 2.5 through any provider.
+
 ### [`feed-safe-images`](./feed-safe-images/SKILL.md)
 
 Pad photos onto a solid canvas at the ratio social-media feeds use, so the full photo is visible on X, Instagram, Threads, or LinkedIn before anyone taps. Ships `scripts/pad.sh`: one ffmpeg call per photo, layouts for X single and carousel (5:4), Instagram 3:4 (white `ig`, black rounded `igblack`, full-bleed `film` frame), Threads 4:5, LinkedIn 4:5 and 1.91:1. Also `scripts/host.sh` to stage files on a 1-day-expiry Cloudflare R2 bucket for Instagram's fetch-by-URL API.
