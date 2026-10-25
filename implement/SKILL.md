@@ -48,6 +48,13 @@ You orchestrate. You do not write code. Every code change goes to an `implemente
 - Keep the diff focused. No unrelated cleanup.
 - Ops, investigation, config, and one-line doc fixes stay with you. Code goes to the implementer.
 
+**Ask for irrefutable proof.** Every chunk and the whole change must show it works, not claim it. Evidence: an end-to-end walkthrough of the real run, screenshots or a screen recording of the real UI (light and dark, mobile width where visible), before/after numbers, command output of the real run, a test that failed before the change and passes after. This is not evidence: "typecheck passes", "lint passes", "build succeeds" on their own, "should work", "I updated X", "tests pass" when no test covers the change, a reviewer agent saying it looks fine. Collect it as you go; it goes in the PR body under "Proof".
+
+**Review by blast radius.** Before every push, run the `code-reviewer` agent and tell it the tier:
+- High risk (database migrations, schema or row-level security, payments or licensing, auth, sessions or keys, release/CI/deploy config, data deletion, anything the repo's AGENTS.md marks as central): full review with fan-out. Tell the user explicitly which high-risk area changed.
+- Low risk (copy, styles, UI layout, docs, isolated components): one quick pass, no fan-out. Naming, closure vs class, and small duplication are not findings.
+- Either tier still checks: does it work, was it tested end to end, can it be changed in a month.
+
 ### 4. Commit
 
 ```bash
@@ -80,6 +87,9 @@ Open the PR **ready for review** (never draft, so AI reviewers like cubic run au
 gh pr create --title "<short title, under 70 chars>" --body "$(cat <<'EOF'
 ## Summary
 <1-3 bullets — what changed and why>
+
+## Proof
+<evidence it works: walkthrough, screenshots, before/after numbers, real command output, failing-then-passing test>
 
 ## Test plan
 - [ ] <relevant check>
@@ -116,6 +126,8 @@ Tell the user:
 - **Dev server URL** (if started): `http://localhost:<port>`
 - Files changed + commit hash
 - Typecheck/test result if you ran one
+- Proof that it works (same as the PR's Proof section; for repos that commit to main without a PR, this report is where it lives)
+- Review tier, and for high risk, which area changed
 - Any known limitations or follow-ups
 - Reminder: "You're still in the worktree. When the PR merges, run `wt remove` to clean up."
 
