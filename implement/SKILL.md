@@ -39,7 +39,7 @@ This switches your working directory into the new worktree.
 
 ### 3. Implement (delegate, verify, repeat)
 
-You orchestrate. You do not write code. Every code change goes to an `implementer` subagent (user-level agent at `~/.claude/agents/implementer.md`: Opus, xhigh effort), one small chunk per agent.
+You orchestrate. You do not write code. Every code change goes to an `implementer` subagent (user-level agent at `~/.claude/agents/implementer.md`: Opus, medium effort; reviewer runs high), one small chunk per agent.
 
 - Split the work into the smallest chunks that each leave the repo building. Typical chunk: one module, one route, one migration, one test file. Never "implement the whole feature" in one agent.
 - Spawn with the Agent tool, `subagent_type: "implementer"`, and a prompt that carries everything the agent needs: absolute repo path (the worktree), the exact files to touch, the conventions to follow, the verify commands, and what NOT to do. The agent has no conversation context.
@@ -146,6 +146,6 @@ If the user is actively iterating (asking for follow-up edits in the same sessio
 - No `wt switch -` back to the original worktree — stay here for iteration.
 - No `wt merge` — merging happens via the PR in GitHub.
 - No `wt remove` — that's manual after PR merge.
-- No parallel architect/reviewer agents — that's `/worktree-dev:worktree-dev`.
+- No parallel architect agents: that's `/worktree-dev:worktree-dev`. High-risk review fan-out happens inside the `code-reviewer` agent.
 - No draft PRs. Always open ready for review; if a PR ends up draft, mark it ready (`gh pr ready <number>`, or GraphQL `markPullRequestReadyForReview`).
 - No force-push, no `--no-verify`, no amending existing commits.
