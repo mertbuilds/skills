@@ -1,12 +1,12 @@
 ---
 name: implement
-description: "Build a feature in an isolated worktrunk worktree, commit, and open a PR marked ready for review. Use whenever the user asks to implement, build, add, or fix something that touches code — e.g. '/implement', 'implement X', 'build X', 'add X', 'fix X', 'let's build it', 'ship it', 'drop this in', 'go code it up'. Skip for questions, explanations, research, and trivial one-line docs/config edits. Skip if already inside a worktrunk worktree (just implement directly)."
+description: "Build a feature in an isolated worktrunk worktree, commit, open a ready-for-review PR, and merge it when the risk tier allows. Use whenever the user asks to implement, build, add, or fix something that touches code — e.g. '/implement', 'implement X', 'build X', 'add X', 'fix X', 'let's build it', 'ship it', 'drop this in', 'go code it up'. Skip for questions, explanations, research, and trivial one-line docs/config edits. Skip if already inside a worktrunk worktree (just implement directly)."
 user-invocable: true
 ---
 
 # Implement: worktrunk-isolated build, ready-for-review PR out
 
-A lean implementation flow. You've already discussed what to build in the conversation — this skill takes it from there: isolate to a worktree, implement, commit, push, open a PR that is ready for review. Stay in the worktree so the user can iterate on review feedback without switching. The PR is the merge path; `wt merge` is never used.
+A lean implementation flow. You've already discussed what to build in the conversation — this skill takes it from there: isolate to a worktree, implement, commit, push, open a PR that is ready for review. Stay in the worktree so the user can iterate on review feedback without switching. The PR is the merge path: merge it yourself for low and normal risk, ask first for high. `wt merge` is never used.
 
 ## When NOT to invoke this skill
 
@@ -50,10 +50,16 @@ You orchestrate. You do not write code. Every code change goes to an `implemente
 
 **Ask for irrefutable proof.** Every chunk and the whole change must show it works, not claim it. Evidence: an end-to-end walkthrough of the real run, screenshots or a screen recording of the real UI (light and dark, mobile width where visible), before/after numbers, command output of the real run, a test that failed before the change and passes after. This is not evidence: "typecheck passes", "lint passes", "build succeeds" on their own, "should work", "I updated X", "tests pass" when no test covers the change, a reviewer agent saying it looks fine. Collect it as you go; it goes in the PR body under "Proof".
 
-**Review by blast radius.** Before every push, run the `code-reviewer` agent. Give it the tier and the proof collected so far (the draft Proof section).
-- High risk (database migrations, schema or row-level security, payments or licensing, auth, sessions or keys, secrets or env handling, release/CI/deploy config, data writes or deletion, scheduled jobs, public API routes, diffs over ~400 lines or 10 files, anything the repo's AGENTS.md marks as central): full review with fan-out. Tell the user explicitly which high-risk area changed.
-- Low risk (copy, styles, UI layout, docs, isolated components): one quick pass, no fan-out. Naming, closure vs class, and small duplication are not findings.
-- Either tier still checks: does it work, was it tested end to end, can it be changed in a month.
+**Risk tier.** The change sets the tier, not the author. It goes in the PR body and decides the merge gate (step 5).
+- High: billing, payments, paywalls or licensing; auth, sessions, keys or secrets; CI or GitHub workflow files; release, installer or auto-updater code; database migrations, schema or row-level security.
+- Low: copy, docs, styles, UI layout, isolated components, additive behind a flag.
+- Normal: everything else.
+
+**Review by blast radius.** Before every push, run the `code-reviewer` agent. Give it the risk tier, the review depth (fan-out or quick pass) with the risky area, and the proof collected so far (the draft Proof section).
+- Full review with fan-out: high tier, plus env handling, deploy config, data writes or deletion, scheduled jobs, public API routes, diffs over ~400 lines or 10 files, anything the repo's AGENTS.md marks as central. These extras get the deep review but stay normal tier at merge. Tell the user explicitly which risky area changed.
+- One quick pass, no fan-out: low and other normal changes. Naming, closure vs class, and small duplication are not findings.
+- Every review still checks: does it work, was it tested end to end, can it be changed in a month.
+- Max 3 review rounds per PR, counting AI reviewers (cubic, Bugbot). Round 2+ reviews only the new diff. Still finding things after round 3: stop and rethink the approach.
 
 ### 4. Commit
 
@@ -86,10 +92,16 @@ Open the PR **ready for review** (never draft, so AI reviewers like cubic run au
 ```bash
 gh pr create --title "<short title, under 70 chars>" --body "$(cat <<'EOF'
 ## Summary
-<1-3 bullets — what changed and why>
+<1-3 bullets: what changed and why>
 
 ## Proof
 <evidence it works: walkthrough, screenshots, before/after numbers, real command output, failing-then-passing test>
+
+## Risk
+Tier: <low | normal | high>. Area: <the risky area this touches, or "none">.
+
+## How to revert
+<revert the merge commit, turn off the flag, roll back the release, or undo the migration>
 
 ## Test plan
 - [ ] <relevant check>
@@ -101,6 +113,8 @@ EOF
 - Base PR title + body on ALL commits on this branch vs. the default branch, not just the latest commit.
 - If the branch name contains an issue number (`fix/DEV-123-...`, `feat/42-...`), include `Closes #<number>` in the body.
 - No "Generated with Claude" line by default. User's preferred voice: lowercase, direct, no em dashes.
+
+**Merge gate** (tier from step 3). Low and normal: merge yourself once CI is all-green (read the check results in their own step first), the reviewer pass is clean and AI reviewer comments are addressed. High: stop at "ready". Show the user the PR link, the Risk and How to revert sections and a two-line summary, and ask for their go. A reviewer agent's pass never replaces it. New commits after the go need a fresh go.
 
 ### 6. Start the dev server (if the repo has one)
 
@@ -127,9 +141,10 @@ Tell the user:
 - Files changed + commit hash
 - Typecheck/test result if you ran one
 - Proof that it works (same as the PR's Proof section; for repos that commit to main without a PR, this report is where it lives)
-- Review tier, and for high risk, which area changed
+- Risk tier and review depth; for high tier or a fan-out review, which risky area changed
+- Merge state: merged (low/normal), or waiting for the user's go (high)
 - Any known limitations or follow-ups
-- Reminder: "You're still in the worktree. When the PR merges, run `wt remove` to clean up."
+- After merge, run `wt remove` and delete the branch; until then, stay in the worktree.
 
 ### 8. Clean up background tasks
 
@@ -144,8 +159,7 @@ If the user is actively iterating (asking for follow-up edits in the same sessio
 ## What this skill does NOT do
 
 - No `wt switch -` back to the original worktree — stay here for iteration.
-- No `wt merge` — merging happens via the PR in GitHub.
-- No `wt remove` — that's manual after PR merge.
-- No parallel architect agents: that's `/worktree-dev:worktree-dev`. High-risk review fan-out happens inside the `code-reviewer` agent.
+- No `wt merge`: merging happens via the PR (see Merge gate).
+- No parallel architect agents: that's `/worktree-dev:worktree-dev`. Review fan-out happens inside the `code-reviewer` agent.
 - No draft PRs. Always open ready for review; if a PR ends up draft, mark it ready (`gh pr ready <number>`, or GraphQL `markPullRequestReadyForReview`).
 - No force-push, no `--no-verify`, no amending existing commits.
