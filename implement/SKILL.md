@@ -59,7 +59,7 @@ You orchestrate. You do not write code. Every code change goes to an `implemente
 - Full review with fan-out: high tier, plus env handling, deploy config, data writes or deletion, scheduled jobs, public API routes, diffs over ~400 lines or 10 files, anything the repo's AGENTS.md marks as central. These extras get the deep review but stay normal tier at merge. Tell the user explicitly which risky area changed.
 - One quick pass, no fan-out: low and other normal changes. Naming, closure vs class, and small duplication are not findings.
 - Every review still checks: does it work, was it tested end to end, can it be changed in a month.
-- Max 3 review rounds per PR, counting AI reviewers (cubic, Bugbot). Round 2+ reviews only the new diff. Still finding things after round 3: stop and rethink the approach.
+- Max 3 review rounds per PR. Round 2+ reviews only the new diff. Still finding things after round 3: stop and rethink the approach.
 
 ### 4. Commit
 
@@ -88,7 +88,7 @@ Detect the base branch:
 gh repo view --json defaultBranchRef -q '.defaultBranchRef.name'
 ```
 
-Open the PR **ready for review** (never draft, so AI reviewers like cubic run automatically):
+Open the PR **ready for review** (never draft):
 ```bash
 gh pr create --title "<short title, under 70 chars>" --body "$(cat <<'EOF'
 ## Summary
@@ -114,7 +114,7 @@ EOF
 - If the branch name contains an issue number (`fix/DEV-123-...`, `feat/42-...`), include `Closes #<number>` in the body.
 - No "Generated with Claude" line by default. User's preferred voice: lowercase, direct, no em dashes.
 
-**Merge gate** (tier from step 3). Low and normal: merge yourself once CI is all-green (read the check results in their own step first), the reviewer pass is clean and AI reviewer comments are addressed. High: stop at "ready". Show the user the PR link, the Risk and How to revert sections and a two-line summary, and ask for their go. A reviewer agent's pass never replaces it. New commits after the go need a fresh go.
+**Merge gate** (tier from step 3). Low and normal: merge yourself once CI is all-green (read the check results in their own step first), and the reviewer pass is clean. High: stop at "ready". Show the user the PR link, the Risk and How to revert sections and a two-line summary, and ask for their go. A reviewer agent's pass never replaces it. New commits after the go need a fresh go.
 
 ### 6. Start the dev server (if the repo has one)
 
